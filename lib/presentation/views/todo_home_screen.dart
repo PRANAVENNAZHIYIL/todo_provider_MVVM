@@ -63,6 +63,16 @@ class TodoList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final todos = Provider.of<TodosProvider>(context).todos;
+
+    if (todos.isEmpty) {
+      return const Center(
+        child: Text(
+          'No Todos Found',
+          style: TextStyle(fontSize: 18, color: Colors.grey),
+        ),
+      );
+    }
+
     return ListView.builder(
       itemCount: todos.length,
       itemBuilder: (context, index) {
@@ -79,6 +89,16 @@ class CompletedTodoList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final completedTodos = Provider.of<TodosProvider>(context).completedTodos;
+
+    if (completedTodos.isEmpty) {
+      return const Center(
+        child: Text(
+          'No Completed Todos',
+          style: TextStyle(fontSize: 18, color: Colors.grey),
+        ),
+      );
+    }
+
     return ListView.builder(
       itemCount: completedTodos.length,
       itemBuilder: (context, index) {

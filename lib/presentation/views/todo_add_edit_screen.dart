@@ -104,62 +104,93 @@ class _AddEditScreenState extends State<AddEditScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final screenWidth = mediaQuery.size.width;
+    final screenHeight = mediaQuery.size.height;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.todoToEdit == null ? 'Add Todo' : 'Edit Todo'),
+        title: Text(
+          widget.todoToEdit == null ? 'Add Todo' : 'Edit Todo',
+          style: TextStyle(fontSize: screenWidth * 0.05),
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                initialValue: _title,
-                decoration: const InputDecoration(labelText: 'Title'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a title';
-                  }
-                  return null;
-                },
-                onSaved: (value) => _title = value!,
-              ),
-              TextFormField(
-                initialValue: _description,
-                decoration: const InputDecoration(labelText: 'Description'),
-                maxLines: 3,
-                onSaved: (value) => _description = value ?? '',
-              ),
-              const SizedBox(height: 20),
-              Row(
-                children: [
-                  Text(DateFormat('yyyy-MM-dd').format(_date)),
-                  const SizedBox(width: 10),
-                  ElevatedButton(
-                    onPressed: () => _selectDate(context),
-                    child: const Text('Select Date'),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: screenWidth * 0.05,
+            vertical: screenHeight * 0.02,
+          ),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextFormField(
+                  initialValue: _title,
+                  decoration: InputDecoration(
+                    labelText: 'Title',
+                    labelStyle: TextStyle(fontSize: screenWidth * 0.045),
                   ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  Text(DateFormat('hh:mm a').format(_date)),
-                  const SizedBox(width: 10),
-                  ElevatedButton(
-                    onPressed: () => _selectTime(context),
-                    child: const Text('Select Time'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a title';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) => _title = value!,
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  initialValue: _description,
+                  maxLines: 3,
+                  decoration: InputDecoration(
+                    labelText: 'Description',
+                    labelStyle: TextStyle(fontSize: screenWidth * 0.045),
                   ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _saveTodo,
-                child: Text(
-                    widget.todoToEdit == null ? 'Add Todo' : 'Update Todo'),
-              ),
-            ],
+                  onSaved: (value) => _description = value ?? '',
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Text(
+                      DateFormat('yyyy-MM-dd').format(_date),
+                      style: TextStyle(fontSize: screenWidth * 0.04),
+                    ),
+                    const SizedBox(width: 10),
+                    ElevatedButton(
+                      onPressed: () => _selectDate(context),
+                      child: const Text('Select Date'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Text(
+                      DateFormat('hh:mm a').format(_date),
+                      style: TextStyle(fontSize: screenWidth * 0.04),
+                    ),
+                    const SizedBox(width: 10),
+                    ElevatedButton(
+                      onPressed: () => _selectTime(context),
+                      child: const Text('Select Time'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 30),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _saveTodo,
+                    child: Text(
+                      widget.todoToEdit == null ? 'Add Todo' : 'Update Todo',
+                      style: TextStyle(fontSize: screenWidth * 0.045),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
