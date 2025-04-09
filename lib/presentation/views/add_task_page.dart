@@ -23,10 +23,8 @@ class _AddPageState extends State<AddPage> {
     super.initState();
     provider = AddProvider();
 
-    // If editing existing task, pre-fill the fields
     if (widget.editData != null) {
       final data = widget.editData!.data() as Map<String, dynamic>;
-
       provider.titleController.text = data['title'] ?? '';
       provider.descriptionController.text = data['description'] ?? '';
 
@@ -44,15 +42,16 @@ class _AddPageState extends State<AddPage> {
 
   @override
   Widget build(BuildContext context) {
+    final mq = MediaQuery.of(context);
     return ChangeNotifierProvider.value(
       value: provider,
       child: Scaffold(
         appBar: AppBar(
           title: Text(
             provider.isEditMode ? "Update Task" : "Create New Task",
-            style: const TextStyle(
+            style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 22,
+              fontSize: mq.size.width * 0.055,
             ),
           ),
           centerTitle: true,
@@ -68,21 +67,21 @@ class _AddPageState extends State<AddPage> {
           ],
         ),
         body: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(mq.size.width * 0.06),
           child: Consumer<AddProvider>(
             builder: (context, provider, _) {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _buildHeader(context, provider),
-                  const SizedBox(height: 24),
-                  _buildTitleField(),
-                  const SizedBox(height: 20),
-                  _buildDescriptionField(),
-                  const SizedBox(height: 20),
-                  _buildDatePicker(context, provider),
-                  const SizedBox(height: 32),
-                  _buildSubmitButton(context, provider),
+                  _buildHeader(context, provider, mq),
+                  SizedBox(height: mq.size.height * 0.03),
+                  _buildTitleField(mq),
+                  SizedBox(height: mq.size.height * 0.025),
+                  _buildDescriptionField(mq),
+                  SizedBox(height: mq.size.height * 0.025),
+                  _buildDatePicker(context, provider, mq),
+                  SizedBox(height: mq.size.height * 0.04),
+                  _buildSubmitButton(context, provider, mq),
                 ],
               );
             },
@@ -92,19 +91,20 @@ class _AddPageState extends State<AddPage> {
     );
   }
 
-  Widget _buildHeader(BuildContext context, AddProvider provider) {
+  Widget _buildHeader(
+      BuildContext context, AddProvider provider, MediaQueryData mq) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           provider.isEditMode ? "Update your task" : "What's your plan?",
-          style: const TextStyle(
-            fontSize: 18,
+          style: TextStyle(
+            fontSize: mq.size.width * 0.045,
             fontWeight: FontWeight.w500,
             color: Colors.black54,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: mq.size.height * 0.01),
         const Divider(
           thickness: 1,
           color: Colors.deepPurple,
@@ -113,19 +113,19 @@ class _AddPageState extends State<AddPage> {
     );
   }
 
-  Widget _buildTitleField() {
+  Widget _buildTitleField(MediaQueryData mq) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           "Task Title",
           style: TextStyle(
-            fontSize: 16,
+            fontSize: mq.size.width * 0.042,
             fontWeight: FontWeight.w500,
             color: Colors.black87,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: mq.size.height * 0.01),
         TextField(
           controller: provider.titleController,
           decoration: InputDecoration(
@@ -136,30 +136,30 @@ class _AddPageState extends State<AddPage> {
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,
             ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 14,
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: mq.size.width * 0.04,
+              vertical: mq.size.height * 0.018,
             ),
           ),
-          style: const TextStyle(fontSize: 16),
+          style: TextStyle(fontSize: mq.size.width * 0.04),
         ),
       ],
     );
   }
 
-  Widget _buildDescriptionField() {
+  Widget _buildDescriptionField(MediaQueryData mq) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           "Description",
           style: TextStyle(
-            fontSize: 16,
+            fontSize: mq.size.width * 0.042,
             fontWeight: FontWeight.w500,
             color: Colors.black87,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: mq.size.height * 0.01),
         TextField(
           controller: provider.descriptionController,
           decoration: InputDecoration(
@@ -170,31 +170,32 @@ class _AddPageState extends State<AddPage> {
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,
             ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 14,
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: mq.size.width * 0.04,
+              vertical: mq.size.height * 0.018,
             ),
           ),
           maxLines: 4,
-          style: const TextStyle(fontSize: 16),
+          style: TextStyle(fontSize: mq.size.width * 0.04),
         ),
       ],
     );
   }
 
-  Widget _buildDatePicker(BuildContext context, AddProvider provider) {
+  Widget _buildDatePicker(
+      BuildContext context, AddProvider provider, MediaQueryData mq) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           "Due Date",
           style: TextStyle(
-            fontSize: 16,
+            fontSize: mq.size.width * 0.042,
             fontWeight: FontWeight.w500,
             color: Colors.black87,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: mq.size.height * 0.01),
         InkWell(
           onTap: () async {
             final picked = await showDatePicker(
@@ -223,9 +224,9 @@ class _AddPageState extends State<AddPage> {
           },
           borderRadius: BorderRadius.circular(12),
           child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 14,
+            padding: EdgeInsets.symmetric(
+              horizontal: mq.size.width * 0.04,
+              vertical: mq.size.height * 0.018,
             ),
             decoration: BoxDecoration(
               color: Colors.grey[50],
@@ -233,21 +234,15 @@ class _AddPageState extends State<AddPage> {
             ),
             child: Row(
               children: [
-                const Icon(
-                  Icons.calendar_today,
-                  color: Colors.deepPurple,
-                  size: 20,
-                ),
-                const SizedBox(width: 12),
+                const Icon(Icons.calendar_today,
+                    color: Colors.deepPurple, size: 20),
+                SizedBox(width: mq.size.width * 0.03),
                 Text(
                   DateFormat('MMM dd, yyyy').format(provider.selectedDate),
-                  style: const TextStyle(fontSize: 16),
+                  style: TextStyle(fontSize: mq.size.width * 0.04),
                 ),
                 const Spacer(),
-                const Icon(
-                  Icons.arrow_drop_down,
-                  color: Colors.deepPurple,
-                ),
+                const Icon(Icons.arrow_drop_down, color: Colors.deepPurple),
               ],
             ),
           ),
@@ -256,7 +251,8 @@ class _AddPageState extends State<AddPage> {
     );
   }
 
-  Widget _buildSubmitButton(BuildContext context, AddProvider provider) {
+  Widget _buildSubmitButton(
+      BuildContext context, AddProvider provider, MediaQueryData mq) {
     return ElevatedButton(
       onPressed: () async {
         if (provider.isValid()) {
@@ -280,7 +276,7 @@ class _AddPageState extends State<AddPage> {
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(
+              content: const Text(
                 "Please enter title and description",
                 style: TextStyle(color: Colors.white),
               ),
@@ -295,7 +291,7 @@ class _AddPageState extends State<AddPage> {
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.deepPurple,
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: EdgeInsets.symmetric(vertical: mq.size.height * 0.02),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
@@ -303,8 +299,8 @@ class _AddPageState extends State<AddPage> {
       ),
       child: Text(
         provider.isEditMode ? "UPDATE TASK" : "CREATE TASK",
-        style: const TextStyle(
-          fontSize: 16,
+        style: TextStyle(
+          fontSize: mq.size.width * 0.045,
           fontWeight: FontWeight.bold,
           color: Colors.white,
         ),
@@ -326,8 +322,8 @@ class _AddPageState extends State<AddPage> {
           TextButton(
             onPressed: () async {
               await provider.editDocRef?.delete();
-              Navigator.pop(context); // Close dialog
-              Navigator.pop(context); // Return to previous screen
+              Navigator.pop(context);
+              Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text("Task deleted successfully"),

@@ -20,6 +20,9 @@ class TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final width = size.width;
+
     final data = task.data();
     final title = data['title'] ?? 'No Title';
     final description = data['description'] ?? 'No Description';
@@ -37,13 +40,13 @@ class TaskCard extends StatelessWidget {
     return Dismissible(
       key: Key(task.id),
       background: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        margin: EdgeInsets.symmetric(horizontal: width * 0.03, vertical: 6),
         decoration: BoxDecoration(
           color: Colors.red[100],
           borderRadius: BorderRadius.circular(12),
         ),
         alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 20),
+        padding: EdgeInsets.only(right: width * 0.05),
         child: const Icon(Icons.delete, color: Colors.red),
       ),
       direction: DismissDirection.endToStart,
@@ -83,7 +86,7 @@ class TaskCard extends StatelessWidget {
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        margin: EdgeInsets.symmetric(horizontal: width * 0.03, vertical: 6),
         decoration: BoxDecoration(
           color: cardColor,
           borderRadius: BorderRadius.circular(12),
@@ -97,16 +100,14 @@ class TaskCard extends StatelessWidget {
           ],
         ),
         child: ListTile(
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          // leading: Icon(
-          //   isCompleted ? Icons.check_circle : Icons.radio_button_unchecked,
-          //   color: isCompleted ? Colors.green : Colors.grey,
-          // ),
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: width * 0.04,
+            vertical: 8,
+          ),
           title: Text(
             title,
             style: TextStyle(
-              fontSize: 18,
+              fontSize: width * 0.045, // Responsive title size
               fontWeight: FontWeight.w600,
               decoration: isCompleted
                   ? TextDecoration.lineThrough
@@ -121,6 +122,7 @@ class TaskCard extends StatelessWidget {
               Text(
                 description,
                 style: TextStyle(
+                  fontSize: width * 0.038, // Responsive description size
                   color: isCompleted ? Colors.grey : Colors.black54,
                   decoration: isCompleted
                       ? TextDecoration.lineThrough
@@ -130,11 +132,13 @@ class TaskCard extends StatelessWidget {
               const SizedBox(height: 8),
               Row(
                 children: [
-                  Icon(Icons.calendar_today, size: 16, color: Colors.grey[600]),
+                  Icon(Icons.calendar_today,
+                      size: width * 0.04, color: Colors.grey[600]),
                   const SizedBox(width: 4),
                   Text(
                     formattedDate,
-                    style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                    style: TextStyle(
+                        color: Colors.grey[600], fontSize: width * 0.032),
                   ),
                 ],
               ),

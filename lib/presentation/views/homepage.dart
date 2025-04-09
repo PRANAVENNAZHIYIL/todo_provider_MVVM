@@ -12,6 +12,11 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final screenWidth = mediaQuery.size.width;
+    final screenHeight = mediaQuery.size.height;
+    final isTablet = screenWidth > 600;
+
     return ChangeNotifierProvider<HomePageProvider>(
       create: (_) => HomePageProvider(),
       child: Consumer<HomePageProvider>(
@@ -19,11 +24,11 @@ class MyHomePage extends StatelessWidget {
           return Scaffold(
             backgroundColor: Colors.grey[50],
             appBar: AppBar(
-              title: const Text(
+              title: Text(
                 'My Tasks',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 24,
+                  fontSize: isTablet ? 28 : 24,
                 ),
               ),
               centerTitle: true,
@@ -49,61 +54,75 @@ class MyHomePage extends StatelessWidget {
               backgroundColor: Colors.deepPurple,
               child: const Icon(Icons.add, color: Colors.white),
             ),
-            body: Builder(builder: (scaffoldContext) {
-              return StreamBuilder(
-                stream: taskProvider.getTasksStream(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        color: Colors.deepPurple,
+            body: Builder(
+              builder: (scaffoldContext) {
+                return StreamBuilder(
+                  stream: taskProvider.getTasksStream(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.deepPurple,
+                        ),
+                      );
+                    }
+
+                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                      return const EmptyState(
+                        title: 'No tasks found',
+                        subtitle: 'Tap + to add a new task',
+                        icon: Icons.assignment_outlined,
+                      );
+                    }
+
+                    final colorScheme = [
+                      Colors.deepPurple.withOpacity(0.1),
+                      Colors.blue.withOpacity(0.1),
+                      Colors.teal.withOpacity(0.1),
+                      Colors.orange.withOpacity(0.1),
+                      Colors.pink.withOpacity(0.1),
+                    ];
+
+                    return Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: isTablet ? screenWidth * 0.1 : 16.0,
                       ),
-                    );
-                  }
+                      child: ListView.builder(
+                        padding: EdgeInsets.symmetric(
+                          vertical: screenHeight * 0.02,
+                        ),
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (context, index) {
+                          final task = snapshot.data!.docs[index];
 
-                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                    return const EmptyState(
-                      title: 'No tasks found',
-                      subtitle: 'Tap + to add a new task',
-                      icon: Icons.assignment_outlined,
-                    );
-                  }
-
-                  final colorScheme = [
-                    Colors.deepPurple.withOpacity(0.1),
-                    Colors.blue.withOpacity(0.1),
-                    Colors.teal.withOpacity(0.1),
-                    Colors.orange.withOpacity(0.1),
-                    Colors.pink.withOpacity(0.1),
-                  ];
-
-                  return ListView.builder(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    itemCount: snapshot.data!.docs.length,
-                    itemBuilder: (context, index) {
-                      final task = snapshot.data!.docs[index];
-
-                      return TaskCard(
-                        task: task,
-                        onDelete: () async {
-                          await task.reference.delete();
-                        },
-                        onEdit: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => AddPage(editData: task),
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 12.0),
+                            child: TaskCard(
+                              task: task,
+                              onDelete: () async {
+                                await task.reference.delete();
+                              },
+                              onEdit: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        AddPage(editData: task),
+                                  ),
+                                );
+                              },
+                              cardColor:
+                                  colorScheme[index % colorScheme.length],
+                              scaffoldContext: scaffoldContext,
                             ),
                           );
                         },
-                        cardColor: colorScheme[index % colorScheme.length],
-                        scaffoldContext: scaffoldContext,
-                      );
-                    },
-                  );
-                },
-              );
-            }),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
           );
         },
       ),
